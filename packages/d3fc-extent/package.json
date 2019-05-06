@@ -24,10 +24,13 @@
   },
   "devDependencies": {
     "@d3fc/d3fc-scripts": "^2.0.4",
-    "ms": "^1.0.0"
+    "ms": "^1.0.0",
+    "babel-polyfill": "^6.13.0",
+    "d3": "^4.2.5"
   },
   "dependencies": {
-    "d3-array": "^1.0.0"
+    "d3-array": "^1.0.0",
+    "@d3fc/d3fc-rebind": "^5.0.6"
   },
   "publishConfig": {
     "access": "public"

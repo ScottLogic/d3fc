@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <script src="../node_modules/babel-polyfill/dist/polyfill.js"></script>
+    <script src="../node_modules/d3/build/d3.js"></script>
+    <script src="../../d3fc-data-join/build/d3fc-data-join.js"></script>
+    <script src="../../d3fc-rebind/build/d3fc-rebind.js"></script>
+    <script src="../../d3fc-axis/build/d3fc-axis.js"></script>
+    <script src="../../d3fc-extent/build/d3fc-extent.js"></script>
+    <script src="../../d3fc-element/build/d3fc-element.js"></script>
+    <script src="../../d3fc-series/build/d3fc-series.js"></script>
+    <script src="../../d3fc-annotation/build/d3fc-annotation.js"></script>
+    <script src="../../d3fc-chart/build/d3fc-chart.js"></script>
+    <script src="../build/d3fc-extent.js"></script>
+    <style>
+    path.area {
+        fill: #99ff99;
+        fill-opacity: 0.5;
+    }
+    path.line {
+        stroke: #60c;
+    }
+    .annotation-gridline line {
+        stroke: #ddd;
+    }
+    </style>
+</head>
+<body>
+    <h1>Charts where all data is positive</h1>
+    <div id="chartyMcChartFace_defaultPadding" style="width: 500px; height: 250px"></div>
+    <div id="chartyMcChartFace_hardLimitZeroPadding" style="width: 500px; height: 250px"></div>
+    <h1>Charts where all data is negative</h1>
+    <div id="chartyMcChartFace_defaultPadding_negative" style="width: 500px; height: 250px"></div>
+    <div id="chartyMcChartFace_hardLimitZeroPadding_negative" style="width: 500px; height: 250px"></div>
+    <script src="hardLimitZeroPadding.js"></script>
+    <script src="hardLimitZeroPaddingNegative.js"></script>
+</body>
+</html>

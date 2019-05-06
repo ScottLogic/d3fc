@@ -1,10 +1,10 @@
 import { default as linearExtent } from './linear';
+import { defaultPadding } from './padding/default';
 
 export default function() {
 
     let accessors = [];
-    let pad = [0, 0];
-    let padUnit = 'percent';
+    let paddingStrategy = defaultPadding();
     let symmetricalAbout = null;
     let include = [];
 
@@ -19,8 +19,9 @@ export default function() {
         });
 
         extent.accessors(adaptedAccessors)
-          .pad(pad)
-          .padUnit(padUnit)
+          .pad(paddingStrategy.pad)
+          .padUnit(paddingStrategy.padUnit)
+          .paddingStrategy(paddingStrategy)
           .symmetricalAbout(symmetricalAbout != null ? symmetricalAbout.valueOf() : null)
           .include(include.map(date => date.valueOf()));
 
@@ -36,19 +37,27 @@ export default function() {
         return instance;
     };
 
-    instance.pad = (...args) => {
-        if (!args.length) {
-            return pad;
+    instance.pad = function() {
+        if (!arguments.length) {
+            return paddingStrategy.pad;
         }
-        pad = args[0];
+        paddingStrategy.pad(arguments.length <= 0 ? undefined : arguments[0]);
         return instance;
     };
 
-    instance.padUnit = (...args) => {
-        if (!args.length) {
-            return padUnit;
+    instance.padUnit = function() {
+        if (!arguments.length) {
+            return paddingStrategy.padUnit;
         }
-        padUnit = args[0];
+        paddingStrategy.padUnit(arguments.length <= 0 ? undefined : arguments[0]);
+        return instance;
+    };
+
+    instance.paddingStrategy = function() {
+        if (!arguments.length) {
+            return paddingStrategy;
+        }
+        paddingStrategy = arguments.length <= 0 ? undefined : arguments[0];
         return instance;
     };
 

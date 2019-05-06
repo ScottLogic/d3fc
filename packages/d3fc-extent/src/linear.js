@@ -1,10 +1,10 @@
 import { min, max } from 'd3-array';
+import { defaultPadding } from './padding/default';
 
 export default function() {
 
     let accessors = [ d => d ];
-    let pad = [0, 0];
-    let padUnit = 'percent';
+    let paddingStrategy = defaultPadding();
     let symmetricalAbout = null;
     let include = [];
 
@@ -35,23 +35,7 @@ export default function() {
             extent[1] = symmetricalAbout + halfRange;
         }
 
-        switch (padUnit) {
-        case 'domain': {
-            extent[0] -= pad[0];
-            extent[1] += pad[1];
-            break;
-        }
-        case 'percent': {
-            const delta = extent[1] - extent[0];
-            extent[0] -= pad[0] * delta;
-            extent[1] += pad[1] * delta;
-            break;
-        }
-        default:
-            throw new Error(`Unknown padUnit: ${padUnit}`);
-        }
-
-        return extent;
+        return paddingStrategy(extent);
     };
 
     instance.accessors = (...args) => {
@@ -62,19 +46,27 @@ export default function() {
         return instance;
     };
 
-    instance.pad = (...args) => {
-        if (!args.length) {
-            return pad;
+    instance.pad = function() {
+        if (!arguments.length) {
+            return paddingStrategy.pad;
         }
-        pad = args[0];
+        paddingStrategy.pad(arguments.length <= 0 ? undefined : arguments[0]);
         return instance;
     };
 
-    instance.padUnit = (...args) => {
-        if (!args.length) {
-            return padUnit;
+    instance.padUnit = function() {
+        if (!arguments.length) {
+            return paddingStrategy.padUnit;
         }
-        padUnit = args[0];
+        paddingStrategy.padUnit(arguments.length <= 0 ? undefined : arguments[0]);
+        return instance;
+    };
+
+    instance.paddingStrategy = function() {
+        if (!arguments.length) {
+            return paddingStrategy;
+        }
+        paddingStrategy = arguments.length <= 0 ? undefined : arguments[0];
         return instance;
     };
 

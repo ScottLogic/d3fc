@@ -9,6 +9,7 @@ describe('bundle', function() {
             }),
             scripts: [
                 require.resolve('d3/dist/d3.js'),
+                './node_modules/@d3fc/d3fc-rebind/build/d3fc-rebind.js',
                 './build/d3fc-extent.js'
             ],
             done: (_, win) => {
