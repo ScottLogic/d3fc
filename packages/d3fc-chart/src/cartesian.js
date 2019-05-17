@@ -15,8 +15,8 @@ export default (...args) => {
 
     let xLabel = functor('');
     let yLabel = functor('');
-    let xAxisHeight = functor(null);
-    let yAxisWidth = functor(null);
+    let xAxisHeight = (...args) => xAxisComponent && xAxisComponent.height ? xAxisComponent.height(...args) : null;
+    let yAxisWidth = (...args) => yAxisComponent && yAxisComponent.width ? yAxisComponent.width(...args) : null;
     let yOrient = functor('right');
     let xOrient = functor('bottom');
     let canvasPlotArea = seriesCanvasMulti();
@@ -26,6 +26,9 @@ export default (...args) => {
     let yAxisStore = store('tickFormat', 'ticks', 'tickArguments', 'tickSize', 'tickSizeInner', 'tickSizeOuter', 'tickValues', 'tickPadding', 'tickCenterLabel');
     let yDecorate = () => { };
     let decorate = () => { };
+
+    let xAxisComponent = null;
+    let yAxisComponent = null;
 
     const containerDataJoin = dataJoin('d3fc-group', 'cartesian-chart');
     const xAxisDataJoin = dataJoin('d3fc-svg', 'x-axis')
@@ -62,9 +65,19 @@ export default (...args) => {
                 .attr('class', d => `y-label ${d}-label`)
                 .text(yLabel(data));
 
+            xAxisComponent = xAxisStore(xOrient(data) === 'top' ? xAxis.top(xScale) : xAxis.bottom(xScale));
+            yAxisComponent = yAxisStore(yOrient(data) === 'left' ? yAxis.left(yScale) : yAxis.right(yScale));
+
             xAxisDataJoin(container, [xOrient(data)])
                 .attr('class', d => `x-axis ${d}-axis`)
-                .style('height', xAxisHeight(data))
+                .on('initialise', (d, i, nodes) => {
+                    const { width } = event.detail;
+                    if (xScale.range()[1] !== width) {
+                        xScale.range([0, width]);
+
+                        select(nodes[i]).style('height', xAxisHeight(select(nodes[i]).select('svg')));
+                    }
+                })
                 .on('measure', (d, i, nodes) => {
                     const { width, height } = event.detail;
                     if (d === 'top') {
@@ -75,16 +88,22 @@ export default (...args) => {
                     xScale.range([0, width]);
                 })
                 .on('draw', (d, i, nodes) => {
-                    const xAxisComponent = d === 'top' ? xAxis.top(xScale) : xAxis.bottom(xScale);
                     xAxisComponent.decorate(xDecorate);
                     transitionPropagator(select(nodes[i]))
                         .select('svg')
-                        .call(xAxisStore(xAxisComponent));
+                            .call(xAxisComponent);
                 });
 
             yAxisDataJoin(container, [yOrient(data)])
                 .attr('class', d => `y-axis ${d}-axis`)
-                .style('width', yAxisWidth(data))
+                .on('initialise', (d, i, nodes) => {
+                    const { height } = event.detail;
+                    if (yScale.range()[0] !== height) {
+                        yScale.range([height, 0]);
+
+                        select(nodes[i]).style('width', yAxisWidth(select(nodes[i]).select('svg')));
+                    }
+                })
                 .on('measure', (d, i, nodes) => {
                     const { width, height } = event.detail;
                     if (d === 'left') {
@@ -95,11 +114,10 @@ export default (...args) => {
                     yScale.range([height, 0]);
                 })
                 .on('draw', (d, i, nodes) => {
-                    const yAxisComponent = d === 'left' ? yAxis.left(yScale) : yAxis.right(yScale);
                     yAxisComponent.decorate(yDecorate);
                     transitionPropagator(select(nodes[i]))
                         .select('svg')
-                        .call(yAxisStore(yAxisComponent));
+                            .call(yAxisComponent);
                 });
 
             container.select('d3fc-canvas.plot-area')
