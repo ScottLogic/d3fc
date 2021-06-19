@@ -14,10 +14,10 @@ const crosshair = fc
     .yScale(yScale)
     .xLabel(d => format(xScale.invert(d.x)))
     .yLabel(d => format(yScale.invert(d.y)))
-    .xDecorate(context => {
+    .xLineDecorate(context => {
         context.strokeStyle = 'rgba(204, 0, 0, 0.25)';
     })
-    .yDecorate(context => {
+    .yLineDecorate(context => {
         context.strokeStyle = 'rgba(204, 0, 0, 0.25)';
     })
     .decorate(context => {

@@ -9,7 +9,8 @@ export default () => {
     let yScale = scaleIdentity();
     let value = d => d;
     let label = value;
-    let decorate = () => {};
+    let lineDecorate = () => {};
+    let labelDecorate = () => {};
     let orient = 'horizontal';
 
     const lineData = lineShape();
@@ -35,26 +36,34 @@ export default () => {
             context.beginPath();
             context.strokeStyle = '#bbb';
             context.fillStyle = '#000';
-            context.textAlign = textAlign;
-            context.textBaseline = textBaseline;
+            
+            lineDecorate(context, d, i);
 
-            decorate(context, d, i);
-
-            // Draw line
             lineData.context(context)(crossDomain.map(extent => {
                 const point = [crossScale(extent), valueScale(value(d))];
                 return horizontal ? point : point.reverse();
             }));
 
-            // Draw label
-            const x = horizontal ? crossScale(crossDomain[1]) : valueScale(value(d));
-            const y = horizontal ? valueScale(value(d)) : crossScale(crossDomain[1]);
-            context.fillText(label(d), x + textOffsetX, y + textOffsetY);
-
             context.fill();
             context.stroke();
             context.closePath();
             context.restore();
+
+            context.save();
+            context.strokeStyle = '#bbb';
+            context.fillStyle = '#000';
+            context.textAlign = textAlign;
+            context.textBaseline = textBaseline;
+
+            const x = horizontal ? crossScale(crossDomain[1]) : valueScale(value(d));
+            const y = horizontal ? valueScale(value(d)) : crossScale(crossDomain[1]);
+            context.translate(x + textOffsetX, y + textOffsetY);
+
+            labelDecorate(context, d, i);
+
+            context.fillText(label(d), 0, 0);
+            context.restore();
+            
         });
     };
 
@@ -86,11 +95,18 @@ export default () => {
         label = constant(args[0]);
         return instance;
     };
-    instance.decorate = (...args) => {
+    instance.lineDecorate = (...args) => {
         if (!args.length) {
-            return decorate;
+            return lineDecorate;
         }
-        decorate = args[0];
+        lineDecorate = args[0];
+        return instance;
+    };
+    instance.labelDecorate = (...args) => {
+        if (!args.length) {
+            return labelDecorate;
+        }
+        labelDecorate = args[0];
         return instance;
     };
     instance.orient = (...args) => {

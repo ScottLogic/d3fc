@@ -21,7 +21,12 @@ A collection of components for rendering plot area annotations (bands, crosshair
 npm install @d3fc/d3fc-annotation
 ```
 
-# API
+# API Reference
+
+* [Gridline Annotation](#gridline-annotation)
+* [Band Annotation](#band-annotation)
+* [Line Annotation](#line-annotation)
+* [Crosshair Annotation](#crosshair-annotation)
 
 ## Gridline Annotation
 

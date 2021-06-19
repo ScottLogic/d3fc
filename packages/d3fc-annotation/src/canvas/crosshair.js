@@ -1,3 +1,4 @@
+
 import { scaleIdentity } from 'd3-scale';
 import { include, prefix, rebind, rebindAll } from '@d3fc/d3fc-rebind';
 import annotationLine from './line';
@@ -78,7 +79,7 @@ export default () => {
         return instance;
     };
 
-    const lineIncludes = include('label', 'decorate');
+    const lineIncludes = include('label', 'lineDecorate', 'labelDecorate');
     rebindAll(instance, horizontalLine, lineIncludes, prefix('y'));
     rebindAll(instance, verticalLine, lineIncludes, prefix('x'));
     rebind(instance, point, 'decorate');

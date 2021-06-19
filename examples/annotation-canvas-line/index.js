@@ -8,20 +8,18 @@ const horizontalLine = fc
     .annotationCanvasLine()
     .xScale(xScale)
     .yScale(yScale)
-    .decorate(context => {
-        context.fillStyle = 'rgba(204, 0, 0, 0.7)';
-        context.strokeStyle = '#c60';
+    .lineDecorate(context => {
+        context.strokeStyle = 'red';
+    })
+    .labelDecorate(context => {
+        context.translate(-30, -10);
     });
 
 const verticalLine = fc
     .annotationCanvasLine()
     .orient('vertical')
     .xScale(xScale)
-    .yScale(yScale)
-    .decorate(context => {
-        context.fillStyle = 'rgba(204, 0, 0, 0.7)';
-        context.strokeStyle = '#06c';
-    });
+    .yScale(yScale);
 
 d3.select(container)
     .on('draw', () => {
